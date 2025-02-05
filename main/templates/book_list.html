@@ -1,0 +1,205 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список книг</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/jpeg" href="{% static 'images/books.jpg' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Для автора
+            $('#author').select2({
+                placeholder: "Выберите автора",
+                allowClear: true,
+                language: "ru"
+            });
+
+            // Для категорий с AJAX поиском
+            $('#categories').select2({
+                placeholder: "Выберите категории",
+                allowClear: true,
+                language: "ru",
+                ajax: {
+                    url: '{% url "load_categories" %}',  // URL для подгрузки категорий
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Для жанров с AJAX поиском
+            $('#genres').select2({
+                placeholder: "Выберите жанры",
+                allowClear: true,
+                language: "ru",
+                ajax: {
+                    url: '{% url "load_genres" %}',  // URL для подгрузки жанров
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Верхняя панель -->
+    <header class="bg-primary text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="{% url 'home' %}" class="h3 text-white">Личный кабинет</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger">Выйти</a>
+        </div>
+    </header>
+
+    <div class="container d-flex mt-5">
+        <!-- Левая панель с фильтрами и кнопками для менеджера -->
+        <aside class="col-md-3">
+            {% if role.rolename == 'Менеджер' %}
+                <h3 class="text-center">Менеджер</h3>
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="{% url 'book_list' %}">Книги</a></li>
+                    <li class="list-group-item"><a href="{% url 'authors_list' %}">Авторы</a></li>
+                    <li class="list-group-item"><a href="{% url 'categories_list' %}">Категории</a></li>
+                    <li class="list-group-item"><a href="{% url 'genres_list' %}">Жанры</a></li>
+                    <li class="list-group-item"><a href="{% url 'borrowed_books_list' %}">Одолженные книги</a></li>
+                    <li class="list-group-item"><a href="{% url 'fines_list' %}">Штрафы</a></li>
+                </ul>
+            {% else %}
+                <p class="text-center">Вы не менеджер</p>
+            {% endif %}
+        </aside>
+
+        <!-- Центральный контент с данными пользователя -->
+        <main class="col-md-9">
+            <h2>Список книг</h2>
+
+            {% if role.rolename == 'Менеджер' %}
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Название книги</label>
+                        <input type="text" class="form-control" name="title" id="title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="author" class="form-label">Автор</label>
+                        <select class="form-select" name="author" id="author">
+                            <option value="">Выберите автора</option>
+                            {% for author in authors %}
+                                <option value="{{ author.id }}">{{ author.full_name }}</option>
+                            {% empty %}
+                                <option disabled>Нет доступных авторов</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="categories" class="form-label">Категории</label>
+                        <select class="form-select" name="categories" id="categories" multiple="multiple">
+                            <option value="">Выберите категории</option>
+                            {% for category in categories %}
+                                <option value="{{ category.categoryid }}"{% if category.categoryid in selected_categories %}selected{% endif %}>
+                                    {{ category.categoryname }}
+                                </option>
+                            {% empty %}
+                                <option disabled>Нет доступных категорий</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="genres" class="form-label">Жанры</label>
+                        <select class="form-select" name="genres" id="genres" multiple="multiple">
+                            <option value="">Выберите жанры</option>
+                            {% for genre in genres %}
+                                <option value="{{ genre.genreid }}"{% if genre.genreid in selected_genres %}selected{% endif %}>
+                                    {{ genre.genrename }}
+                                </option>
+                            {% empty %}
+                                <option disabled>Нет доступных жанров</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="publicationyear" class="form-label">Год издания</label>
+                        <input type="date" class="form-control" name="publicationyear" id="publicationyear">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="totalcopies" class="form-label">Общее количество</label>
+                        <input type="number" class="form-control" name="totalcopies" id="totalcopies">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="availablecopies" class="form-label">Доступное количество</label>
+                        <input type="number" class="form-control" name="availablecopies" id="availablecopies">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Изображение</label>
+                        <input type="file" class="form-control" name="image" id="image">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" name="add_book">Добавить книгу</button>
+                </form>
+            {% endif %}
+
+            <!-- Список книг -->
+            <ul class="list-group mt-4">
+                {% for book in books %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ book.image_url }}" class="img-thumbnail me-3" style="width: 50px; height: 75px;">
+                            <div>
+                                <strong>{{ book.title }}</strong> <span class="text-muted">({{ book.publicationyear }})</span><br>
+                                {{ book.authorid.firstname }} {{ book.authorid.middlename }} {{ book.authorid.lastname }}
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{% url 'edit_book' book.bookid %}" class="btn btn-warning btn-sm">Редактировать</a>
+                            <a href="{% url 'delete_book' book.bookid %}" onclick="return confirm('Вы уверены, что хотите удалить эту книгу?')" class="btn btn-danger btn-sm">Удалить</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Нет книг в списке</li>
+                {% endfor %}
+            </ul>
+        </main>
+    </div>
+
+    <!-- Нижняя панель с отступом -->
+    <footer class="bg-dark text-white py-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">Адрес: г. Москва, ул. Примерная, 123</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Почта поддержки: support@library.com</p>
+                    <p class="mb-0">Телефон: +7 (123) 456-78-90</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

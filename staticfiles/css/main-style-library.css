@@ -1,0 +1,206 @@
+/* Общее оформление страницы */
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Общая область для контента */
+.main-content {
+    flex: 1;
+}
+
+/* Шапка сайта */
+.header {
+    background: #f4f4f4;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-form input {
+    padding: 5px;
+    font-size: 16px;
+}
+
+.auth-button a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+/* Боковая панель фильтров */
+.filters {
+    width: 20%;
+    min-width: 200px;
+    background: #f8f8f8;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Основная часть контента */
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Уменьшение размера карточек книг */
+.book-card {
+    width: 180px; /* Ограничиваем ширину карточки */
+    height: auto; /* Сохраняем пропорции */
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+    display: block;
+    box-sizing: border-box; /* Учитываем отступы в общей ширине */
+}
+
+/* Уменьшение размера изображений в карточках */
+.book-card img {
+    width: 100%;
+    max-width: 120px; /* Ограничиваем максимальную ширину изображения */
+    height: auto; /* Сохраняем пропорции */
+    margin-bottom: 10px; /* Отступ снизу для изображения */
+}
+
+/* Уменьшение размера текста внутри карточек */
+.book-card h4, .book-card p {
+    font-size: 14px; /* Уменьшаем шрифт */
+    margin: 5px 0; /* Уменьшаем отступы */
+    overflow: hidden; /* Скрываем текст, который не помещается */
+}
+
+
+/* Стили для блоков с доступными копиями */
+.book-card p:last-of-type {
+    font-size: 12px;
+    color: #555; /* Меньше заметный текст */
+}
+
+/* Подвал сайта */
+.footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    flex-shrink: 0;
+}
+
+/* Ошибки */
+.error-messages {
+    margin-top: 20px;
+}
+
+.error-messages p {
+    color: red;
+    font-size: 14px;
+}
+
+/* Успешные сообщения */
+.success {
+    color: green;
+    font-size: 14px;
+}
+
+/* Стилизация select2 */
+select {
+    width: 30% !important; /* Устанавливаем ширину для select */
+    font-size: 16px;
+    padding: 5px;
+}
+
+/* Контейнер select2 */
+.select2-container {
+    width: 30% !important; /* Устанавливаем ширину контейнера select2 */
+    font-size: 16px;
+}
+
+/* Стили для выбранных элементов select2 */
+.select2-selection {
+    height: 40px !important;
+    font-size: 16px;
+}
+
+/* Выравнивание текста внутри выбранных элементов */
+.select2-selection__rendered {
+    line-height: 40px;
+}
+
+/* Стили для выпадающего списка */
+.select2-dropdown {
+    max-height: 300px !important;
+    overflow-y: auto;
+}
+
+/* Стрелка в select2 */
+.select2-selection__arrow {
+    height: 100%;
+    top: 0;
+}
+
+/* Стили для форм */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;  /* Отступы между элементами */
+    max-width: 500px;  /* Максимальная ширина формы */
+    margin: 0 auto;  /* Центрируем форму */
+}
+
+form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+form input, form select, form textarea, form button {
+    width: 100%;  /* Элементы формы занимают всю ширину */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Кнопка отправки формы */
+form button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Стили для списка книг */
+.book-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    max-width: 600px; /* Ограничение по ширине */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Отступы между элементами */
+}
+
+/* Карточки книг */
+.book-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+/* Основной контейнер */
+.main-container {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}

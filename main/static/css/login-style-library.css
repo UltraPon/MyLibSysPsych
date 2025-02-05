@@ -1,0 +1,143 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+/* Стили хедера */
+header {
+    background: #f4f4f4;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.library-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.auth-button a {
+    text-decoration: none;
+    color: #007BFF;
+    margin-left: 20px;
+}
+
+/* Контейнер для формы авторизации */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 80px); /* Отнимаем высоту хедера */
+}
+
+.auth-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px; /* Закругленные края */
+    width: 100%;
+    max-width: 400px; /* Ограничиваем максимальную ширину */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.auth-box label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.auth-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px; /* Закругленные края для полей ввода */
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.auth-box button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px; /* Закругленные края */
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.auth-box button:hover {
+    background-color: #0056b3;
+}
+
+/* Ссылки "Регистрация" и "Забыли пароль?" */
+/* Ссылки "Регистрация" и "Забыли пароль?" */
+.auth-links {
+    display: flex;
+    justify-content: space-between;  /* Равномерное распределение кнопок */
+    margin-top: 10px;
+}
+
+.auth-link {
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 14px;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+/* Стили футера */
+.footer {
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between; /* Выравнивание элементов футера */
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    box-sizing: border-box;
+}
+
+/* Внутреннее содержимое футера */
+.footer .footer-content {
+    display: flex;
+    justify-content: space-between; /* Выравнивание элементов */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Стили для каждого параграфа футера */
+.footer .footer-content p {
+    margin: 0;
+    font-size: 14px; /* Уменьшаем размер шрифта */
+}
+
+/* Адрес слева */
+.footer .footer-content .address {
+    margin-right: auto;
+}
+
+/* Почта и телефон справа */
+.footer .footer-content .contact {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: right;
+}

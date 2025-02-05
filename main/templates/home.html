@@ -1,0 +1,123 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Библиотека</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="{% static 'images/books.jpg' %}">
+</head>
+<body>
+    <!-- Верхняя панель -->
+    <header class="bg-primary text-white py-3">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'home' %}" class="h3 text-white">Библиотека</a>
+                <form method="GET" action="{% url 'home' %}" class="d-flex">
+                    <input type="text" name="search" placeholder="Поиск по книгам..." value="{{ search_query }}" class="form-control me-2">
+                    <button type="submit" class="btn btn-light">Найти</button>
+                </form>
+                <div class="auth-button">
+                    {% if request.session.user_id %}
+                        <a href="{% url 'profile' %}" class="btn btn-light">Личный кабинет</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-light">Войти</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-4">
+        <div class="row">
+            <!-- Левая панель с фильтрами -->
+            <aside class="col-md-3">
+                <h3>Фильтры</h3>
+                <form method="GET" action="{% url 'home' %}">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Категория:</label>
+                        <select name="category" id="category" class="form-select">
+                            <option value="">Все категории</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category.id == selected_category %}selected{% endif %}>{{ category.categoryname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="genre" class="form-label">Жанр:</label>
+                        <select name="genre" id="genre" class="form-select">
+                            <option value="">Все жанры</option>
+                            {% for genre in genres %}
+                                <option value="{{ genre.id }}" {% if genre.id == selected_genre %}selected{% endif %}>{{ genre.genrename }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Применить фильтры</button>
+                </form>
+            </aside>
+
+            <!-- Центральный контент с книгами -->
+            <main class="col-md-9">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    {% for book in books %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author.firstname }} {{ book.author.lastname }}</p>
+                                    <p class="card-text">{{ book.publicationyear }}</p>
+                                    <p class="card-text">{{ book.availablecopies }} доступно</p>
+                                    <a href="{% url 'book_detail' book.bookid %}" class="btn btn-info">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Пагинация -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if books.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}&search={{ search_query }}">Первая</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ books.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}&search={{ search_query }}">Предыдущая</a>
+                            </li>
+                        {% endif %}
+                        <span class="page-item disabled">Страница {{ books.number }} из {{ books.paginator.num_pages }}</span>
+                        {% if books.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ books.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}&search={{ search_query }}">Следующая</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ books.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}&search={{ search_query }}">Последняя</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </main>
+        </div>
+    </div>
+
+    <!-- Нижняя панель -->
+    <footer class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">Адрес: г. Москва, ул. Примерная, 123</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Почта поддержки: support@library.com</p>
+                    <p class="mb-0">Телефон: +7 (123) 456-78-90</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

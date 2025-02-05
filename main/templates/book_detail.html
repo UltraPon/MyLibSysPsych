@@ -1,0 +1,146 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подробности о книге</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="{% static 'images/books.jpg' %}">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1;
+        }
+        .card-body {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <header class="bg-primary text-white py-3">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'home' %}" class="h3 text-white">Библиотека</a>
+                    <form method="GET" action="{% url 'home' %}" class="d-flex">
+                        <input type="text" name="search" placeholder="Поиск по книгам..." value="{{ search_query }}" class="form-control me-2">
+                        <button type="submit" class="btn btn-light">Найти</button>
+                    </form>
+                    <div class="auth-button">
+                        {% if request.session.user_id %}
+                            <a href="{% url 'profile' %}" class="btn btn-light">Личный кабинет</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-light">Войти</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container py-4">
+            <div class="row">
+                <aside class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Доступность книги</h5>
+                            {% if book.availablecopies > 0 %}
+                                <p class="card-text">Осталось: {{ book.availablecopies }} шт.</p>
+                                {% if user_role == "Гость" %}
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">Взять книгу</button>
+                                    </form>
+                                {% else %}
+                                    <p class="text-muted">Только гости могут брать книги.</p>
+                                {% endif %}
+                            {% else %}
+                                <p class="card-text text-danger">Книга недоступна.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </aside>
+
+                <main class="col-md-9">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="{{ book.image_url }}" class="img-fluid rounded-start" alt="Изображение книги">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text"><strong>Автор:</strong> {{ book.authorid.firstname }} {{ book.authorid.middlename }} {{ book.authorid.lastname }}</p>
+                                <p class="card-text"><strong>Жанры:</strong>
+                                    {% for mapping in genres %}
+                                        {{ mapping.genreid.genrename }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                                <p class="card-text"><strong>Категории:</strong>
+                                    {% for mapping in categories %}
+                                        {{ mapping.categoryid.categoryname }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                                <p class="card-text"><strong>Год выпуска:</strong> {{ book.publicationyear }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Отзывы</h3>
+                    <div class="reviews">
+                        {% for review in reviews %}
+                            <div class="review">
+                                <p><strong>{{ review.userid.firstname }} {{ review.userid.lastname }}</strong> ({{ review.reviewdate }})</p>
+                                <p>{{ review.reviewtext }}</p>
+
+                                {% if user_role == "Гость" and review.userid.userid == user.userid %}
+                                    <a href="{% url 'edit_review' review.reviewid %}" class="btn btn-warning btn-sm">Редактировать</a>
+                                    <a href="{% url 'delete_review' review.reviewid %}" class="btn btn-danger btn-sm">Удалить</a>
+                                {% elif user_role == "Менеджер" %}
+                                    <a href="{% url 'delete_review' review.reviewid %}" class="btn btn-danger btn-sm">Удалить</a>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <p>Отзывов пока нет.</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Форма добавления отзыва для гостей -->
+                    {% if user_role == "Гость" %}
+                        <h4>Оставить отзыв:</h4>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <textarea name="reviewtext" rows="4" class="form-control" placeholder="Напишите отзыв..." required></textarea>
+                            <button type="submit" class="btn btn-primary mt-2">Добавить отзыв</button>
+                        </form>
+                    {% endif %}
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">Адрес: г. Москва, ул. Примерная, 123</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Почта поддержки: support@library.com</p>
+                    <p class="mb-0">Телефон: +7 (123) 456-78-90</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

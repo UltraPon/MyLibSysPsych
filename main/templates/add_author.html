@@ -1,0 +1,74 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить автора</title>
+{#    <link rel="stylesheet" href="{% static 'css/main-style-library.css' %}">#}
+    <link rel="icon" type="image/jpeg" href="{% static 'images/books.jpg' %}">
+</head>
+<body>
+
+    <!-- Верхняя панель -->
+    <header class="header">
+        <a href="{% url 'home' %}" class="library-name">Личный кабинет</a>
+        <div class="header-container">
+            <a href="{% url 'logout' %}">
+                <button>Выйти</button>
+            </a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Левая панель с фильтрами и кнопками для менеджера -->
+        <aside class="filters">
+            {% if user.roleid.rolename == 'Менеджер' %}
+                <h3>Менеджер</h3>
+                <ul>
+                    <li><a href="{% url 'add_book' %}">Добавить книгу</a></li>
+                    <li><a href="{% url 'book_list' %}">Список книг</a></li>
+                    <li><a href="{% url 'authors_list' %}">Авторы</a></li>
+                    <li><a href="{% url 'categories_list' %}">Категории</a></li>
+                    <li><a href="{% url 'genres_list' %}">Жанры</a></li>
+                    <li><a href="{% url 'borrowed_books_list' %}">Одолженные книги</a></li>
+                    <li><a href="{% url 'fines_list' %}">Штрафы</a></li>
+                </ul>
+            {% else %}
+                <p>Вы не менеджер</p>
+            {% endif %}
+        </aside>
+
+        <!-- Центральный контент с данными для добавления/удаления/редактирования авторов -->
+        <main class="content">
+            <h2>Добавить нового автора</h2>
+
+            <form method="POST">
+                {% csrf_token %}
+                <label for="firstname">Имя:</label>
+                <input type="text" name="firstname" required><br><br>
+                <label for="lastname">Фамилия:</label>
+                <input type="text" name="lastname" required><br><br>
+                <label for="middlename">Отчество:</label>
+                <input type="text" name="middlename"><br><br>
+                <label for="biography">Биография:</label><br>
+                <textarea name="biography"></textarea><br><br>
+                <button type="submit">Добавить</button>
+            </form>
+        </main>
+    </div>
+
+    <!-- Нижняя панель -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="address">Адрес: г. Москва, ул. Примерная, 123</p>
+            <div class="contact">
+                <p>Почта поддержки: support@library.com</p>
+                <p>Телефон: +7 (123) 456-78-90</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

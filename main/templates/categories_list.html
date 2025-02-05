@@ -1,0 +1,125 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Категории</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="{% static 'images/books.jpg' %}">
+    <style>
+        /* Уменьшаем отступы между полями ввода */
+        input, textarea, button {
+            margin-bottom: 10px; /* Уменьшаем отступы */
+        }
+
+        /* Добавляем отступ между списком категорий и футером */
+        .category-list {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+    <!-- Верхняя панель -->
+    <header class="bg-primary text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="{% url 'home' %}" class="h3 text-white">Личный кабинет</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger">Выйти</a>
+        </div>
+    </header>
+
+    <div class="container d-flex mt-5">
+        <!-- Левая панель с фильтрами и кнопками для менеджера -->
+        <aside class="col-md-3">
+            {% if role and role.rolename == 'Менеджер' %}
+                <h3 class="text-center">Менеджер</h3>
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="{% url 'book_list' %}">Книги</a></li>
+                    <li class="list-group-item"><a href="{% url 'authors_list' %}">Авторы</a></li>
+                    <li class="list-group-item"><a href="{% url 'categories_list' %}">Категории</a></li>
+                    <li class="list-group-item"><a href="{% url 'genres_list' %}">Жанры</a></li>
+                    <li class="list-group-item"><a href="{% url 'borrowed_books_list' %}">Одолженные книги</a></li>
+                    <li class="list-group-item"><a href="{% url 'fines_list' %}">Штрафы</a></li>
+                </ul>
+            {% else %}
+                <p class="text-center">Вы не менеджер</p>
+            {% endif %}
+        </aside>
+
+        <!-- Центральный контент с данными пользователя -->
+        <main class="col-md-9">
+            <h2>Категории</h2>
+
+            <!-- Форма для добавления новой категории -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h3>Добавить новую категорию</h3>
+
+                    <form method="POST" action="{% url 'add_category' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="categoryname" class="form-label">Название категории:</label>
+                            <input type="text" class="form-control" name="categoryname" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Форма для поиска категорий -->
+            <h3 class="mt-4">Поиск категорий</h3>
+            <form method="GET">
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="search" placeholder="Введите название категории" value="{{ search_query }}">
+                </div>
+                <button type="submit" class="btn btn-secondary">Найти</button>
+            </form>
+
+            <!-- Список категорий -->
+            <h3 class="mt-4">Список категорий:</h3>
+            <ul class="list-group category-list">
+                {% for category in categories %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ category.categoryname }}
+                        <div>
+                            <a href="{% url 'edit_category' category.categoryid %}" class="btn btn-warning btn-sm">Редактировать</a>
+                            <a href="{% url 'delete_category' category.categoryid %}" onclick="return confirm('Вы уверены?')" class="btn btn-danger btn-sm">Удалить</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Пагинация -->
+            <div class="pagination mt-4 mb-4"> <!-- Добавляем mb-4 для отступа снизу -->
+                {% if page|add:-1 > 0 %}
+                    <a href="?page={{ page|add:-1 }}" class="btn btn-primary btn-sm">Предыдущая страница</a>
+                {% endif %}
+
+                <span>Страница {{ page }} из {{ total_pages }}</span>
+
+                {% if page|add:1 <= total_pages %}
+                    <a href="?page={{ page|add:1 }}" class="btn btn-primary btn-sm">Следующая страница</a>
+                {% endif %}
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Нижняя панель -->
+    <footer class="bg-dark text-white py-3 mt-auto">
+        <div class="container d-flex justify-content-between">
+            <div>
+                <p class="mb-0">Адрес: г. Москва, ул. Примерная, 123</p>
+            </div>
+            <div class="text-end">
+                <p class="mb-0">Почта поддержки: support@library.com</p>
+                <p class="mb-0">Телефон: +7 (123) 456-78-90</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

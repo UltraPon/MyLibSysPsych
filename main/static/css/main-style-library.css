@@ -1,0 +1,133 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 100% высоты экрана */
+}
+
+header {
+    background: #f4f4f4;
+    padding: 20px; /* Увеличена высота верхней панели */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.search-form {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.search-form input {
+    padding: 5px;
+    font-size: 16px;
+}
+
+.auth-button {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.auth-button a {
+    text-decoration: none;
+    color: #007BFF;
+    margin-left: 20px; /* Отступ для правой кнопки */
+}
+
+.library-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.library-name:hover {
+    text-decoration: underline;
+}
+
+.main-container {
+    display: flex;
+    height: calc(100vh - 100px); /* Учитываем высоту верхней панели */
+}
+
+.filters {
+    width: 20%; /* Левая панель с фильтрами */
+    background: #f8f8f8;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+    width: 80%; /* Центральная панель для контента и пагинации */
+    padding: 20px;
+    overflow-y: auto; /* Чтобы контент мог прокручиваться */
+}
+
+.book-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+footer {
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box; /* Учитывает padding в ширину */
+}
+
+.footer .footer-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box; /* Учитывает padding в ширину */
+}
+
+.footer .footer-content p {
+    margin: 0;
+    font-size: 14px; /* Уменьшаем размер шрифта */
+}
+
+/* Адрес слева */
+.footer .footer-content .address {
+    margin-right: auto;
+}
+
+/* Почта и телефон справа */
+.footer .footer-content .contact {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: right;
+}
+
+/* Прокрутка для контента */
+.main-container {
+    display: flex;
+    height: calc(100vh - 100px);
+    overflow-x: hidden; /* Убираем горизонтальную прокрутку */
+}
+
+.content {
+    width: 80%;
+    padding: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}

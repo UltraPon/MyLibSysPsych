@@ -1,0 +1,129 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="{% static 'images/books.jpg' %}">
+    <script>
+        function validateForm(event) {
+            let firstName = document.getElementById("first_name").value.trim();
+            let lastName = document.getElementById("last_name").value.trim();
+            let middleName = document.getElementById("middle_name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
+
+            let nameRegex = /^[А-Яа-яЁёA-Za-z]{1,50}$/; // Только буквы, максимум 50 символов
+
+            if (!nameRegex.test(firstName)) {
+                alert("Имя должно содержать только буквы и быть не длиннее 50 символов.");
+                event.preventDefault();
+                return false;
+            }
+            if (!nameRegex.test(lastName)) {
+                alert("Фамилия должна содержать только буквы и быть не длиннее 50 символов.");
+                event.preventDefault();
+                return false;
+            }
+            if (middleName !== "" && !nameRegex.test(middleName)) {
+                alert("Отчество должно содержать только буквы и быть не длиннее 50 символов.");
+                event.preventDefault();
+                return false;
+            }
+            if (password.length > 25) {
+                alert("Пароль не должен превышать 25 символов.");
+                event.preventDefault();
+                return false;
+            }
+            if (!email || !password || !firstName || !lastName) {
+                alert("Заполните все обязательные поля!");
+                event.preventDefault(); // Останавливаем отправку формы
+                return false;
+            }
+            // Проверка на корректность email
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Введите корректный email!");
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body class="bg-light">
+    <div class="main-content">
+        <!-- Верхняя панель -->
+        <header class="bg-primary text-white py-3">
+            <div class="container">
+                <a href="{% url 'home' %}" class="h3 text-white">Библиотека</a>
+            </div>
+        </header>
+
+        <!-- Основной контейнер для формы регистрации -->
+        <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="auth-box p-4 border rounded shadow-lg bg-white w-100" style="max-width: 500px;">
+                <h2 class="text-center mb-4">Регистрация</h2>
+                <form method="POST" onsubmit="return validateForm(event)">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">Имя:</label>
+                        <input type="text" id="first_name" name="first_name" class="form-control" required maxlength="50">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Фамилия:</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control" required maxlength="50">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="middle_name" class="form-label">Отчество (необязательно):</label>
+                        <input type="text" id="middle_name" name="middle_name" class="form-control" maxlength="50">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Почта:</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Пароль:</label>
+                        <input type="password" id="password" name="password" class="form-control" required maxlength="25">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+                </form>
+
+                {% if messages %}
+                    <div class="alert alert-danger mt-3" role="alert">
+                        {% for message in messages %}
+                            <p class="mb-0">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Нижняя панель -->
+    <footer class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">Адрес: г. Москва, ул. Примерная, 123</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Почта поддержки: support@library.com</p>
+                    <p class="mb-0">Телефон: +7 (123) 456-78-90</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
