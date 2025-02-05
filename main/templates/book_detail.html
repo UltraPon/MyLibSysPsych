@@ -58,7 +58,7 @@
                                 {% if user_role == "Гость" %}
                                     <form method="POST">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-primary">Взять книгу</button>
+                                        <button type="submit" name="action" value="take_book" class="btn btn-primary">Взять книгу</button>
                                     </form>
                                 {% else %}
                                     <p class="text-muted">Только гости могут брать книги.</p>
@@ -119,7 +119,7 @@
                         <form method="POST">
                             {% csrf_token %}
                             <textarea name="reviewtext" rows="4" class="form-control" placeholder="Напишите отзыв..." required></textarea>
-                            <button type="submit" class="btn btn-primary mt-2">Добавить отзыв</button>
+                            <button type="submit" name="action" value="add_review" class="btn btn-primary mt-2">Добавить отзыв</button>
                         </form>
                     {% endif %}
                 </main>

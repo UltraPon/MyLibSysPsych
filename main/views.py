@@ -358,27 +358,42 @@ def book_detail(request, id):
 
     reviews = Reviews.objects.filter(bookid=book)
 
-    # Если нажата кнопка "Взять книгу"
-    if request.method == "POST" and user and user_role == "Гость":
-        if book.availablecopies > 0:
-            # Уменьшаем количество доступных копий
-            book.availablecopies -= 1
-            book.save()
+    if request.method == "POST":
+        action = request.POST.get('action')
 
-            # Создаем запись в Bookloans
-            Bookloans.objects.create(
-                userid=user,
+        if action == "add_review" and user_role == "Гость":
+            # Добавление отзыва
+            review_text = request.POST.get('reviewtext')
+            Reviews.objects.create(
                 bookid=book,
-                loandate=now(),
-                returndate=now() + timedelta(days=14),  # Например, срок возврата - 14 дней
-                isreturned=False,
-                renewalscount=0
+                userid=user,
+                reviewtext=review_text,
+                reviewdate=now()
             )
-
-            messages.success(request, "Вы успешно взяли книгу. Верните её в течение 14 дней.")
+            messages.success(request, "Ваш отзыв успешно добавлен.")
             return redirect('book_detail', id=id)
-        else:
-            messages.error(request, "Книга недоступна.")
+
+        elif action == "take_book" and user_role == "Гость":
+            # Если книга доступна, уменьшаем количество доступных копий
+            if book.availablecopies > 0:
+                book.availablecopies -= 1
+                book.save()
+
+                # Создаем запись в Bookloans
+                Bookloans.objects.create(
+                    userid=user,
+                    bookid=book,
+                    loandate=now(),
+                    returndate=now() + timedelta(days=14),
+                    isreturned=False,
+                    renewalscount=0
+                )
+
+                messages.success(request, "Вы успешно взяли книгу. Верните её в течение 14 дней.")
+                return redirect('book_detail', id=id)
+            else:
+                messages.error(request, "Книга недоступна.")
+                return redirect('book_detail', id=id)
 
     return render(request, 'book_detail.html', {
         'book': book,
