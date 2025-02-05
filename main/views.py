@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import connection
-from .models import Books, Bookcategories, Bookgenres, Users, Authors, Bookloans, Fines, Bookcategorymapping, Bookgenremapping
+from .models import Books, Bookcategories, Bookgenres, Users, Authors, Bookloans, Fines, Bookcategorymapping, Bookgenremapping, Reviews
 from django.core.paginator import Paginator
 from django.contrib.auth import logout
 import logging, bcrypt, requests
@@ -356,6 +356,8 @@ def book_detail(request, id):
         user = Users.objects.get(userid=request.session['user_id'])
         user_role = user.roleid.rolename  # Предполагается, что роль связана через ForeignKey
 
+    reviews = Reviews.objects.filter(bookid=book)
+
     # Если нажата кнопка "Взять книгу"
     if request.method == "POST" and user and user_role == "Гость":
         if book.availablecopies > 0:
@@ -384,6 +386,7 @@ def book_detail(request, id):
         'genres': genres,
         'user': user,
         'user_role': user_role,
+        'reviews': reviews
     })
 
 # Дополнительные views для подгрузки категорий и жанров
