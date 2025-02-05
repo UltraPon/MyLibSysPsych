@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-8drhd7t@h2(&j-p0$_#54&gs3dzpbjt_q^-*w1k0kxq-2zyw=e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["mylibsyspsych.onrender.com"]
 
 
 # Application definition
