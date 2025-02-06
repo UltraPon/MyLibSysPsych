@@ -154,19 +154,50 @@ def profile(request):
 
     return render(request, 'profile.html', context)  # Отображаем страницу профиля и передаем роль
 
-def upload_image_to_imgur(image):
-    client_id = '61233fd9b925112'  # Замените на ваш Client-ID
-    headers = {'Authorization': 'Client-ID ' + client_id}
+CLIENT_ID = "5040ba1685b8ed5"
+CLIENT_SECRET = "29995bc9ff205387c089b70eadbc5c614c4c81a7"
+REFRESH_TOKEN = "285f8ce4c1d716360df7485073e4110b155d0bc5"
 
-    url = "https://api.imgur.com/3/upload"
-    files = {'image': image}
-    response = requests.post(url, headers=headers, files=files)
+def get_access_token():
+    """Обновляет access_token с помощью refresh_token"""
+    response = requests.post(
+        "https://api.imgur.com/oauth2/token",
+        data={
+            "refresh_token": REFRESH_TOKEN,
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "grant_type": "refresh_token"
+        }
+    )
 
     if response.status_code == 200:
-        link = response.json()['data']['link']  # Получаем ссылку на изображение
-        return link
+        return response.json()["access_token"]
     else:
+        print("Ошибка обновления токена:", response.json())
         return None
+
+def upload_image_to_imgur(image_path):
+    """Загружает изображение в профиль Imgur и возвращает ссылку"""
+    access_token = get_access_token()
+    if not access_token:
+        return None
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    with open(image_path, "rb") as image_file:
+        files = {"image": image_file}
+        response = requests.post("https://api.imgur.com/3/upload", headers=headers, files=files)
+
+    if response.status_code == 200:
+        return response.json()["data"]["link"]
+    else:
+        print("Ошибка загрузки:", response.json())
+        return None
+
+# Пример использования
+image_url = upload_image_to_imgur("image.jpg")
+if image_url:
+    print("Изображение загружено:", image_url)
 
 def book_list(request):
     # Проверка прав пользователя
