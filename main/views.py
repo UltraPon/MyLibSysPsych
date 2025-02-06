@@ -154,50 +154,50 @@ def profile(request):
 
     return render(request, 'profile.html', context)  # Отображаем страницу профиля и передаем роль
 
-CLIENT_ID = "5040ba1685b8ed5"
-CLIENT_SECRET = "29995bc9ff205387c089b70eadbc5c614c4c81a7"
-REFRESH_TOKEN = "285f8ce4c1d716360df7485073e4110b155d0bc5"
-
 def get_access_token():
-    """Обновляет access_token с помощью refresh_token"""
-    response = requests.post(
-        "https://api.imgur.com/oauth2/token",
-        data={
-            "refresh_token": REFRESH_TOKEN,
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "grant_type": "refresh_token"
-        }
-    )
+    """Функция для получения актуального access_token через refresh_token"""
+    client_id = "5040ba1685b8ed5"
+    client_secret = "29995bc9ff205387c089b70eadbc5c614c4c81a7"
+    refresh_token = "285f8ce4c1d716360df7485073e4110b155d0bc5"
 
+    token_url = "https://api.imgur.com/oauth2/token"
+    data = {
+        "refresh_token": refresh_token,
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "grant_type": "refresh_token",
+    }
+
+    response = requests.post(token_url, data=data)
     if response.status_code == 200:
-        return response.json()["access_token"]
+        return response.json().get("access_token")
     else:
-        print("Ошибка обновления токена:", response.json())
+        print("Ошибка получения access_token:", response.json())
         return None
 
-def upload_image_to_imgur(image_path):
-    """Загружает изображение в профиль Imgur и возвращает ссылку"""
+def upload_image_to_imgur(image):
+    """Загружает изображение в Imgur и возвращает ссылку"""
     access_token = get_access_token()
     if not access_token:
+        print("Ошибка: access_token не получен")
         return None
 
-    headers = {"Authorization": f"Bearer {access_token}"}
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
 
-    with open(image_path, "rb") as image_file:
-        files = {"image": image_file}
-        response = requests.post("https://api.imgur.com/3/upload", headers=headers, files=files)
+    files = {
+        "image": image
+    }
+
+    # Отправляем запрос к API Imgur
+    response = requests.post("https://api.imgur.com/3/upload", headers=headers, files=files)
 
     if response.status_code == 200:
-        return response.json()["data"]["link"]
+        return response.json()["data"]["link"]  # Возвращаем ссылку на изображение
     else:
-        print("Ошибка загрузки:", response.json())
+        print("Ошибка загрузки изображения:", response.json())
         return None
-
-# Пример использования
-image_url = upload_image_to_imgur("image.jpg")
-if image_url:
-    print("Изображение загружено:", image_url)
 
 def book_list(request):
     # Проверка прав пользователя
