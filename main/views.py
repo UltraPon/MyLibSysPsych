@@ -155,7 +155,7 @@ def profile(request):
     return render(request, 'profile.html', context)  # Отображаем страницу профиля и передаем роль
 
 def upload_image_to_imgur(image):
-    client_id = '9f7e75ba367b031'  # Замените на ваш Client-ID
+    client_id = '61233fd9b925112'  # Замените на ваш Client-ID
     headers = {'Authorization': 'Client-ID ' + client_id}
 
     url = "https://api.imgur.com/3/upload"
