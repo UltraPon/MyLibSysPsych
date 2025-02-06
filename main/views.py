@@ -755,3 +755,17 @@ def edit_review(request, review_id):
 
     # Отображаем форму с текущим текстом отзыва
     return render(request, 'edit_review.html', {'review': review, 'book': review.bookid})
+
+def delete_review(request, review_id):
+    review = get_object_or_404(Reviews, reviewid=review_id)
+
+    # Проверка, что отзыв принадлежит текущему пользователю или является администратором
+    if review.userid != request.user:
+        messages.error(request, "Вы не можете удалить этот отзыв.")
+        return redirect('book_detail', id=review.bookid.id)
+
+    # Удаляем отзыв
+    review.delete()
+
+    messages.success(request, "Отзыв успешно удален.")
+    return redirect('book_detail', id=review.bookid.id)
