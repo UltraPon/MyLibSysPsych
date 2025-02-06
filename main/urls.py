@@ -31,6 +31,6 @@ urlpatterns = [
     path('return_book/<int:loan_id>', views.return_book, name='return_book'),
     path('fines_list/', views.fines_list, name='fines_list'),  # Штрафы
     path('review/<int:review_id>/edit/', views.edit_review, name='edit_review'),
-    path('review/<int:review_id/delete/>', views.delete_review, name='delete_review'),
+    path('review/<int:review_id>/delete/', views.delete_review, name='delete_review'),
     path('django_select2/', include('django_select2.urls', namespace='django_select2')),
 ]
