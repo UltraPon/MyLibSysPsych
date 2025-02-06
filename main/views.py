@@ -730,3 +730,28 @@ def fines_list(request):
         'role': role,
         'user': user,
         'userid': user_id,})
+
+def edit_review(request, review_id):
+    # Получаем отзыв
+    review = get_object_or_404(Reviews, reviewid=review_id)
+
+    # Проверяем, что отзыв принадлежит текущему пользователю
+    if review.userid != request.user:
+        messages.error(request, "Вы не можете редактировать этот отзыв.")
+        return redirect('book_detail', id=review.bookid.id)
+
+    # Обработка формы редактирования отзыва
+    if request.method == 'POST':
+        review_text = request.POST.get('reviewtext')
+
+        # Обновляем отзыв
+        if review_text:
+            review.reviewtext = review_text
+            review.reviewdate = now()  # Обновляем дату отзыва
+            review.save()
+
+            messages.success(request, "Ваш отзыв успешно обновлен.")
+            return redirect('book_detail', id=review.bookid.id)
+
+    # Отображаем форму с текущим текстом отзыва
+    return render(request, 'edit_review.html', {'review': review, 'book': review.bookid})

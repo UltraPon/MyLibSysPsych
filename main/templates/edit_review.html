@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+    <h2>Редактирование отзыва для книги: {{ book.title }}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="reviewtext" class="form-label">Ваш отзыв:</label>
+            <textarea class="form-control" name="reviewtext" id="reviewtext" rows="4" required>{{ review.reviewtext }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        <a href="{% url 'book_detail' book.id %}" class="btn btn-secondary">Назад</a>
+    </form>
+{% endblock %}
