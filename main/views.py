@@ -26,10 +26,6 @@ def home(request):
     if genre_filter:
         books = books.filter(bookgenremapping__genreid=genre_filter)
 
-    paginator = Paginator(books, 20)  # 20 книг на страницу
-    page_number = request.GET.get('page')
-    books_page = paginator.get_page(page_number)
-
     categories = Bookcategories.objects.all()
     genres = Bookgenres.objects.all()
 
@@ -38,7 +34,7 @@ def home(request):
     user_role = request.session.get('user_role')
 
     return render(request, 'home.html', {
-        'books': books_page,
+        'books': books,
         'categories': categories,
         'genres': genres,
         'search_query': search_query,

@@ -76,29 +76,6 @@
                         </div>
                     {% endfor %}
                 </div>
-
-                <!-- Пагинация -->
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        {% if books.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Первая</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ books.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Предыдущая</a>
-                            </li>
-                        {% endif %}
-                        <span class="page-item disabled">Страница {{ books.number }} из {{ books.paginator.num_pages }}</span>
-                        {% if books.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ books.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Следующая</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ books.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_genre %}&genre={{ selected_genre }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Последняя</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
             </main>
         </div>
     </div>
