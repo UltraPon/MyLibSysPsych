@@ -762,10 +762,10 @@ def delete_review(request, review_id):
     # Проверка, что отзыв принадлежит текущему пользователю или является администратором
     if review.userid != request.user:
         messages.error(request, "Вы не можете удалить этот отзыв.")
-        return redirect('book_detail', id=review.bookid.id)
+        return redirect('book_detail', id=review.bookid.bookid)
 
     # Удаляем отзыв
     review.delete()
 
     messages.success(request, "Отзыв успешно удален.")
-    return redirect('book_detail', id=review.bookid.id)
+    return redirect('book_detail', id=review.bookid.bookid)
