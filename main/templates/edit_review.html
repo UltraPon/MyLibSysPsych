@@ -42,7 +42,7 @@
         <div class="container py-4">
             <h2>Редактирование отзыва для книги: {{ book.title }}</h2>
 
-            {% if 'user_id' not in request.session or user.userid != review.userid.userid %}
+            {% if user_role != "Гость" and review.userid.userid != user.userid %}
                 <div class="alert alert-danger">У вас нет прав для редактирования этого отзыва.</div>
             {% else %}
                 <form method="POST">

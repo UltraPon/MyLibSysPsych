@@ -742,8 +742,11 @@ def edit_review(request, review_id):
 
     user = get_object_or_404(Users, userid=request.session['user_id'])
 
-    # Проверяем, что отзыв принадлежит пользователю
-    if review.userid.userid != user.userid:
+    # Получаем роль пользователя
+    user_role = user.roleid.rolename
+
+    # Проверяем, что отзыв принадлежит пользователю, или если роль - Менеджер
+    if user_role != "Гость" and review.userid.userid != user.userid:
         messages.error(request, "Вы не можете редактировать этот отзыв.")
         return redirect('book_detail', id=review.bookid.bookid)
 
@@ -756,7 +759,7 @@ def edit_review(request, review_id):
             messages.success(request, "Ваш отзыв успешно обновлен.")
             return redirect('book_detail', id=review.bookid.bookid)
 
-    return render(request, 'edit_review.html', {'review': review, 'book': review.bookid})
+    return render(request, 'edit_review.html', {'review': review, 'book': review.bookid, 'user_role': user_role})
 
 def delete_review(request, review_id):
     review = get_object_or_404(Reviews, reviewid=review_id)
