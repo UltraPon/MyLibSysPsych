@@ -738,7 +738,7 @@ def edit_review(request, review_id):
     # Проверяем, что отзыв принадлежит текущему пользователю
     if review.userid != request.user:
         messages.error(request, "Вы не можете редактировать этот отзыв.")
-        return redirect('book_detail', id=review.bookid.id)
+        return redirect('book_detail', id=review.bookid.bookid)
 
     # Обработка формы редактирования отзыва
     if request.method == 'POST':
@@ -751,7 +751,7 @@ def edit_review(request, review_id):
             review.save()
 
             messages.success(request, "Ваш отзыв успешно обновлен.")
-            return redirect('book_detail', id=review.bookid.id)
+            return redirect('book_detail', id=review.bookid.bookid)
 
     # Отображаем форму с текущим текстом отзыва
     return render(request, 'edit_review.html', {'review': review, 'book': review.bookid})
