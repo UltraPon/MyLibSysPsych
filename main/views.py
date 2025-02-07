@@ -735,37 +735,44 @@ def edit_review(request, review_id):
     # Получаем отзыв
     review = get_object_or_404(Reviews, reviewid=review_id)
 
-    # Проверяем, что отзыв принадлежит текущему пользователю
-    if review.userid != request.user:
+    # Проверяем, что пользователь авторизован
+    if 'user_id' not in request.session:
+        messages.error(request, "Вы должны быть авторизованы, чтобы редактировать отзыв.")
+        return redirect('book_detail', id=review.bookid.bookid)
+
+    user = get_object_or_404(Users, userid=request.session['user_id'])
+
+    # Проверяем, что отзыв принадлежит пользователю
+    if review.userid.userid != user.userid:
         messages.error(request, "Вы не можете редактировать этот отзыв.")
         return redirect('book_detail', id=review.bookid.bookid)
 
-    # Обработка формы редактирования отзыва
     if request.method == 'POST':
         review_text = request.POST.get('reviewtext')
-
-        # Обновляем отзыв
         if review_text:
             review.reviewtext = review_text
-            review.reviewdate = now()  # Обновляем дату отзыва
+            review.reviewdate = now()  # Обновляем дату
             review.save()
-
             messages.success(request, "Ваш отзыв успешно обновлен.")
             return redirect('book_detail', id=review.bookid.bookid)
 
-    # Отображаем форму с текущим текстом отзыва
     return render(request, 'edit_review.html', {'review': review, 'book': review.bookid})
 
 def delete_review(request, review_id):
     review = get_object_or_404(Reviews, reviewid=review_id)
 
-    # Проверка, что отзыв принадлежит текущему пользователю или является администратором
-    if review.userid != request.user:
+    # Проверяем, что пользователь авторизован
+    if 'user_id' not in request.session:
+        messages.error(request, "Вы должны быть авторизованы, чтобы удалить отзыв.")
+        return redirect('book_detail', id=review.bookid.bookid)
+
+    user = get_object_or_404(Users, userid=request.session['user_id'])
+
+    # Проверяем, что пользователь - владелец отзыва или менеджер
+    if review.userid.userid != user.userid and user.roleid.rolename != "Менеджер":
         messages.error(request, "Вы не можете удалить этот отзыв.")
         return redirect('book_detail', id=review.bookid.bookid)
 
-    # Удаляем отзыв
     review.delete()
-
     messages.success(request, "Отзыв успешно удален.")
     return redirect('book_detail', id=review.bookid.bookid)
